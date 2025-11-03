@@ -1,0 +1,17 @@
+{
+  "train_ids": [
+    "A01T",
+    "A02T",
+    "A03T",
+    "A04T",
+    "A05T"
+  ],
+  "val_ood_ids": [
+    "A06T",
+    "A07T"
+  ],
+  "test_ood_ids": [
+    "A08T",
+    "A09T"
+  ]
+}
