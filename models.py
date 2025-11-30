@@ -3,11 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class EEGNetHybridNorm(nn.Module):
-    """
-    HybridNorm EEGNet:
-    - 在每个卷积块中保留 BatchNorm，同时叠加 GroupNorm(num_groups=1) ≈ LayerNorm（跨通道归一）
-    - 比纯 BatchNorm 更稳地应对跨被试分布差异
-    """
+
     def __init__(self, num_classes=4, num_channels=22, sample_length=1000, dropout_rate=0.35):
         super().__init__()
         # block1: time conv -> BN -> spatial conv -> BN -> GN -> act -> pool -> dropout

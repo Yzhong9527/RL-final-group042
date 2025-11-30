@@ -66,10 +66,6 @@ class BCI2DCursorEnv(gym.Env):
     def _get_eeg_features(self):
         if self.feature_bank is not None:
             global_idx = self.current_segment_idx * self.segment_len + self.trial_ptr
-
-            if global_idx >= len(self.feature_bank):
-                global_idx = len(self.feature_bank) - 1
-
             feats = self.feature_bank[global_idx]
             if feats.shape[0] > 160:
                 feats = feats[:160]
@@ -152,30 +148,6 @@ class BCI2DCursorEnv(gym.Env):
 
         self._last_distance = new_dist
         return reward, done
-    def expert_sl_action(self):
-        """
-        Convert SL decoder (class 1–4) → RL action (0–3)
-        """
-        eeg_signal = self.current_segment[self.trial_ptr]
-        eeg_tensor = torch.FloatTensor(eeg_signal).unsqueeze(0).unsqueeze(0)
-
-        with torch.no_grad():
-            sl_probs = self.sl_decoder(eeg_tensor)
-            sl_probs = F.softmax(sl_probs, dim=1).cpu().numpy().flatten()
-
-        sl_class = int(np.argmax(sl_probs)) + 1  # SL 类别是 {1,2,3,4}
-
-        # SL label → RL action 对应表
-        mapping = {
-            3: 0,  # 上
-            4: 1,  # 下
-            1: 2,  # 左
-            2: 3   # 右
-        }
-
-        return mapping[sl_class]
-
-
 
     def _apply_noise(self, probs, sigma=0.0):
         if sigma == 0:
